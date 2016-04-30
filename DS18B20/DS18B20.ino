@@ -52,6 +52,8 @@ void readAndSend() {
   dtostrf(temperature, 7, 3, charBuf);
 
   //For time being GET as it's easier.
+  //Issue #1
+  
   HTTPClient http;
   http.begin(String(url) + "?temp=" + String(charBuf) + "&vcc=" + String(ESP.getVcc()) + "&vdd=" + String(readvdd33())); //HTTP
   int httpCode = http.GET();
