@@ -65,7 +65,6 @@ void readAndSend() {
       Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
   }
   http.end();
-  
 }
 
 
