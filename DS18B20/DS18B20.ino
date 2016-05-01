@@ -48,14 +48,14 @@ void readAndSend() {
   DS18B20.requestTemperatures(); 
   delay(250);
   temperature = DS18B20.getTempCByIndex(0);
-  char charBuf[15];
-  dtostrf(temperature, 7, 3, charBuf);
+  //char charBuf[15];
+  //dtostrf(temperature, 7, 3, charBuf);
 
   //For time being GET as it's easier.
   //Issue #1
   HTTPClient http;
   http.setUserAgent("DS18B20");
-  http.begin(String(url) + "?temp=" + String(charBuf) + "&vcc=" + String(ESP.getVcc()) + "&vdd=" + String(readvdd33())); //HTTP
+  http.begin(String(url) + "?temp=" + String(temperature) + "&vcc=" + String(ESP.getVcc()) + "&vdd=" + String(readvdd33())); //HTTP
   int httpCode = http.GET();
   if(httpCode > 0) {
     Serial.printf("[HTTP] GET... code: %d\n", httpCode);
