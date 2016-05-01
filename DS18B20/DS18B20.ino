@@ -54,6 +54,7 @@ void readAndSend() {
   //For time being GET as it's easier.
   //Issue #1
   HTTPClient http;
+  http.setUserAgent("DS18B20");
   http.begin(String(url) + "?temp=" + String(charBuf) + "&vcc=" + String(ESP.getVcc()) + "&vdd=" + String(readvdd33())); //HTTP
   int httpCode = http.GET();
   if(httpCode > 0) {
