@@ -10,7 +10,10 @@ float temperature;
 
 const char* ssid = "SSID";
 const char* pass = "PASS";
-const char* url = "URL";
+const int sensorId = 1;
+const String url = "URL" + String(sensorId);
+
+
 
 
 extern "C" {
@@ -48,23 +51,24 @@ void readAndSend() {
   DS18B20.requestTemperatures(); 
   delay(250);
   temperature = DS18B20.getTempCByIndex(0);
-  //char charBuf[15];
-  //dtostrf(temperature, 7, 3, charBuf);
-
-  //For time being GET as it's easier.
-  //Issue #1
   HTTPClient http;
   http.setUserAgent("DS18B20");
-  http.begin(String(url) + "?temp=" + String(temperature) + "&vcc=" + String(ESP.getVcc()) + "&vdd=" + String(readvdd33())); //HTTP
-  int httpCode = http.GET();
+  Serial.println("URL" + url);
+  http.begin(url);
+  float voltage = (float(ESP.getVcc()) + float(readvdd33())) / 2048.0;
+  Serial.println("Temperature: " + String(temperature));
+  Serial.println("Voltage: " + String(voltage));
+  String payload = "{ \"value\" : " + String(temperature) +  " , \"voltage\" : { \"value\": " + String(voltage) +  "  } }";
+  http.addHeader("Content-Type", "application/json");
+  int httpCode = http.POST(payload);
   if(httpCode > 0) {
-    Serial.printf("[HTTP] GET... code: %d\n", httpCode);
+    Serial.printf("[HTTP] POST... code: %d\n", httpCode);
     if(httpCode == HTTP_CODE_OK) {
-        String payload = http.getString();
+        payload = http.getString();
         Serial.println(payload);
     }
   } else {
-      Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+      Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
   }
   http.end();
 }
