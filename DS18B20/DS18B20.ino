@@ -8,10 +8,11 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature DS18B20(&oneWire);
 float temperature;
 
-const char* ssid = "SSID";
-const char* pass = "PASS";
-const int sensorId = 1;
-const String url = "URL" + String(sensorId);
+const char* SSID = "SSID";
+const char* PASS = "PASS";
+const int SENSOR_ID = 1;
+const String SERVER_URL = "SERVER_URL" + String(SENSOR_ID);
+const int REFRESH_RATE = 300; //300 seconds - 5 mins
 
 
 
@@ -33,12 +34,12 @@ void setup() {
 void sleep() {
   wifi_set_sleep_type(LIGHT_SLEEP_T);
   Serial.println("Sleeping for 30 sec");
-  delay(30000);
+  delay(REFRESH_RATE * 1000);
 }
 
 void initWifi() {
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, pass);
+  WiFi.begin(SSID, PASS);
   while ((WiFi.status() != WL_CONNECTED)) {
      delay(500);
      Serial.print(".");
@@ -53,8 +54,8 @@ void readAndSend() {
   temperature = DS18B20.getTempCByIndex(0);
   HTTPClient http;
   http.setUserAgent("DS18B20");
-  Serial.println("URL" + url);
-  http.begin(url);
+  Serial.println("URL: " + SERVER_URL);
+  http.begin(SERVER_URL);
   float voltage = (float(ESP.getVcc()) + float(readvdd33())) / 2048.0;
   Serial.println("Temperature: " + String(temperature));
   Serial.println("Voltage: " + String(voltage));
