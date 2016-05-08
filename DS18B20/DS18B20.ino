@@ -27,6 +27,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println();
   DS18B20.begin();
+  wifi_fpm_set_sleep_type(LIGHT_SLEEP_T);
 }
 
 void sleep() {
@@ -50,8 +51,8 @@ void readAndSend() {
   DS18B20.requestTemperatures(); 
   delay(250);
   temperature = DS18B20.getTempCByIndex(0);
-  Serial.println("Incorrect temperature (" + String(temperature) + ") readout.");
   if (temperature > 85 ||  temperature < -120) {
+    Serial.println("Incorrect temperature (" + String(temperature) + ") readout.");
     return;
   }
   HTTPClient http;
