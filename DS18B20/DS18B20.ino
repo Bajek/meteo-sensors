@@ -15,8 +15,6 @@ const String SERVER_URL = "SERVER_URL" + String(SENSOR_ID);
 const int REFRESH_RATE = 300; //300 seconds - 5 mins
 
 
-
-
 extern "C" {
   #include "user_interface.h"
   //for input voltage readouts
@@ -52,6 +50,10 @@ void readAndSend() {
   DS18B20.requestTemperatures(); 
   delay(250);
   temperature = DS18B20.getTempCByIndex(0);
+  Serial.println("Incorrect temperature (" + String(temperature) + ") readout.");
+  if (temperature > 85 ||  temperature < -120) {
+    return;
+  }
   HTTPClient http;
   http.setUserAgent("DS18B20");
   Serial.println("URL: " + SERVER_URL);
